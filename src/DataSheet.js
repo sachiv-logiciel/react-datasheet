@@ -54,9 +54,8 @@ export default class DataSheet extends PureComponent {
     this.isClearing = this.isClearing.bind(this);
     this.handleComponentKey = this.handleComponentKey.bind(this);
 
-    this.handleKeyboardCellMovement = this.handleKeyboardCellMovement.bind(
-      this,
-    );
+    this.handleKeyboardCellMovement =
+      this.handleKeyboardCellMovement.bind(this);
 
     this.defaultState = {
       start: {},
@@ -319,12 +318,8 @@ export default class DataSheet extends PureComponent {
     const currentCell = !noCellsSelected && this.props.data[start.i][start.j];
     const equationKeysPressed =
       [
-        187 /* equal */,
-        189 /* substract */,
-        190 /* period */,
-        107 /* add */,
-        109 /* decimal point */,
-        110,
+        187 /* equal */, 189 /* substract */, 190 /* period */, 107 /* add */,
+        109 /* decimal point */, 110,
       ].indexOf(keyCode) > -1;
 
     if (noCellsSelected || ctrlKeyPressed) {
@@ -633,6 +628,50 @@ export default class DataSheet extends PureComponent {
     return this.state.clear.i === i && this.state.clear.j === j;
   }
 
+  getSelectedCellClasses(row, col) {
+    let classes = '';
+
+    // Get selected state of selection
+    const {
+      start: { i: iStart, j: jStart },
+      end: { i: iEnd, j: jEnd },
+    } = this.getState();
+
+    // Get Equal matrix of selection
+    const iFrom = iStart < iEnd ? iStart : iEnd;
+    const iTo = iStart > iEnd ? iStart : iEnd;
+
+    const jFrom = jStart < jEnd ? jStart : jEnd;
+    const jTo = jStart > jEnd ? jStart : jEnd;
+
+    // Starting cell of selection
+    if (iStart === row && jStart === col) {
+      classes += ' highlight-border';
+    }
+
+    // first row of selection
+    if (iFrom === row) {
+      classes += ' highlight-top';
+    }
+
+    // last row of selection
+    if (iTo === row) {
+      classes += ' highlight-bottom';
+    }
+
+    // first column of selection
+    if (jFrom === col) {
+      classes += ' highlight-left';
+    }
+
+    // last column of selection
+    if (jTo === col) {
+      classes += ' highlight-right';
+    }
+
+    return classes;
+  }
+
   render() {
     const {
       sheetRenderer: SheetRenderer,
@@ -643,12 +682,14 @@ export default class DataSheet extends PureComponent {
       dataEditor,
       valueViewer,
       attributesRenderer,
+      isEnableBorderSelection,
       className,
       overflow,
       data,
       keyFn,
     } = this.props;
     const { forceEdit } = this.state;
+
     return (
       <span
         ref={r => {
@@ -668,6 +709,17 @@ export default class DataSheet extends PureComponent {
             <RowRenderer key={keyFn ? keyFn(i) : i} row={i} cells={row}>
               {row.map((cell, j) => {
                 const isEditing = this.isEditing(i, j);
+
+                let selectedClasses = '';
+
+                if (isEnableBorderSelection) {
+                  selectedClasses += this.getSelectedCellClasses(i, j);
+                }
+
+                if (!isEnableBorderSelection) {
+                  selectedClasses += ' selected-border';
+                }
+
                 return (
                   <DataCell
                     key={cell.key ? cell.key : `${i}-${j}`}
@@ -692,6 +744,7 @@ export default class DataSheet extends PureComponent {
                     dataRenderer={dataRenderer}
                     valueViewer={valueViewer}
                     dataEditor={dataEditor}
+                    selectedClasses={selectedClasses}
                     {...(isEditing
                       ? {
                           forceEdit,
@@ -739,6 +792,7 @@ DataSheet.propTypes = {
   attributesRenderer: PropTypes.func,
   keyFn: PropTypes.func,
   handleCopy: PropTypes.func,
+  isEnableBorderSelection: PropTypes.bool,
 };
 
 DataSheet.defaultProps = {
@@ -747,4 +801,5 @@ DataSheet.defaultProps = {
   cellRenderer: Cell,
   valueViewer: ValueViewer,
   dataEditor: DataEditor,
+  isEnableBorderSelection: false,
 };

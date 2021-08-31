@@ -194,6 +194,7 @@ export default class DataCell extends PureComponent {
       selected,
       editing,
       onKeyUp,
+      selectedClasses,
     } = this.props;
     const { updated } = this.state;
 
@@ -206,7 +207,7 @@ export default class DataCell extends PureComponent {
       cell.className,
       'cell',
       cell.overflow,
-      selected && 'selected',
+      selected && `selected ${selectedClasses}`,
       editing && 'editing',
       cell.readOnly && 'read-only',
       updated && 'updated',
@@ -243,6 +244,7 @@ DataCell.propTypes = {
   cell: PropTypes.shape(CellShape).isRequired,
   forceEdit: PropTypes.bool,
   selected: PropTypes.bool,
+  selectedClasses: PropTypes.string,
   editing: PropTypes.bool,
   editValue: PropTypes.any,
   clearing: PropTypes.bool,
@@ -268,4 +270,5 @@ DataCell.defaultProps = {
   editing: false,
   clearing: false,
   cellRenderer: Cell,
+  selectedClasses: '',
 };
