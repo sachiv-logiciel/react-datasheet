@@ -801,5 +801,5 @@ DataSheet.defaultProps = {
   cellRenderer: Cell,
   valueViewer: ValueViewer,
   dataEditor: DataEditor,
-  isEnableBorderSelection: false,
+  isEnableBorderSelection: true,
 };
