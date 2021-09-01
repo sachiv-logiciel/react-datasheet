@@ -646,7 +646,7 @@ export default class DataSheet extends PureComponent {
 
     // Starting cell of selection
     if (iStart === row && jStart === col) {
-      classes += ' highlight-border';
+      classes += ' highlight-selected';
     }
 
     // first row of selection
