@@ -535,6 +535,14 @@ export default class DataSheet extends PureComponent {
   }
 
   onMouseDown(i, j, e) {
+    //e.button describes the mouse button that was clicked
+    // 0 is left, 1 is middle, 2 is right
+    // If Right click detected
+    // e.button === 2 // If user use right click
+    if (e && e.button === 2) {
+      return;
+    }
+
     const isNowEditingSameCell =
       !isEmpty(this.state.editing) &&
       this.state.editing.i === i &&
